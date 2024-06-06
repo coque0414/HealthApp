@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     // MainActivity2로 이동
                     Intent intent = new Intent(this, MainActivity4.class);
                     startActivity(intent);
-//                    finish(); // 현재 액티비티를 종료하여 백 스택에서 제거
+                    finish(); // 현재 액티비티를 종료하여 백 스택에서 제거
                 });
             }
         });
