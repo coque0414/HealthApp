@@ -29,73 +29,6 @@
         app:cardCornerRadius="20dp"
         app:cardElevation="4dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="1dp"
-            app:srcCompat="@drawable/person_1"
-            tools:ignore="ContentDescription" />
-
-        <EditText
-            android:id="@+id/editText_person"
-            android:layout_width="wrap_content"
-            android:layout_height="39dp"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="1dp"
-            android:background="@drawable/curve_bg"
-            android:hint="First Name"
-            android:padding="10dp"
-            android:textSize="16sp"
-            tools:ignore="Autofill,HardcodedText,TextFields" />
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        app:cardBackgroundColor="#80FFFFFF"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp">
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="1dp"
-            app:srcCompat="@drawable/person_1"
-            tools:ignore="ContentDescription" />
-
-        <EditText
-            android:id="@+id/editText_person_2"
-            android:layout_width="wrap_content"
-            android:layout_height="39dp"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="1dp"
-            android:background="@drawable/curve_bg"
-            android:hint="Last Name"
-            android:padding="10dp"
-            android:textSize="16sp"
-            tools:ignore="Autofill,HardcodedText,TextFields" />
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        app:cardBackgroundColor="#80FFFFFF"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp">
-
 
         <ImageView
             android:layout_width="wrap_content"
@@ -153,19 +86,18 @@
             tools:ignore="Autofill,HardcodedText" />
     </androidx.cardview.widget.CardView>
 
-    <CheckBox
+    <Button
         android:id="@+id/button_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
         android:background="@android:color/transparent"
-        android:gravity="left"
-        android:text="By continuing you accept our Privacy Policy and \n Term of Use"
+        android:gravity="center"
+        android:text="Forgot your password?"
         android:textColor="#B2B2B2"
         android:textSize="12sp"
         android:textStyle="normal"
-        tools:ignore="HardcodedText,RtlHardcoded" />
+        tools:ignore="HardcodedText,SpUsage" />
 
     <android.widget.Button
         android:id="@+id/button_Login"
@@ -177,7 +109,7 @@
         android:layout_marginEnd="30dp"
         android:background="@drawable/curve_login"
         android:gravity="center"
-        android:text="Register"
+        android:text="Login"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="normal"
@@ -202,7 +134,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="-35dp"
+            android:layout_marginTop="-85dp"
             android:text="OR"
             android:textStyle="normal"
             tools:ignore="HardcodedText" />

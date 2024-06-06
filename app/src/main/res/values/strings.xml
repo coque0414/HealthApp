@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Mobile_program</string>
+    <string name="app_name">TEST_2</string>
+    <!-- 다른 문자열 리소스들 -->
+    <string name="combined_text">
+        <![CDATA[Hey there,<br/><big><b>Welcome Back</b></big>]]>
+    </string>
+
 </resources>
