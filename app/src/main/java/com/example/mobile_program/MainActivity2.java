@@ -25,7 +25,7 @@ public class MainActivity2 extends AppCompatActivity {
             textView.setText(Html.fromHtml(getString(R.string.combined_text), Html.FROM_HTML_MODE_COMPACT));
         }
 
-        Button button = (Button) findViewById(R.id.button_password);
+        Button button = (Button) findViewById(R.id.check);
         button.setPaintFlags(button.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 }

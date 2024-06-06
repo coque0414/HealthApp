@@ -18,5 +18,15 @@ public class USER_ENTITY {
 
     @ColumnInfo(name = "Point")
     public int point = 0; // 기본 값은 0으로 설정
+
+    @ColumnInfo(name = "Nickname")
+    public String nickname;
+
+    public USER_ENTITY(String id, String password, String nickname) {
+        this.id = id;
+        this.password = password;
+        this.nickname = nickname;
+        this.point = 0;
+    }
 }
 
