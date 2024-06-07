@@ -25,7 +25,7 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main4);
 
         stepCounterTextView = findViewById(R.id.step_counter);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

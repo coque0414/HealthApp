@@ -10,15 +10,15 @@ import androidx.room.PrimaryKey;
         foreignKeys = @ForeignKey(
                 entity = USER_ENTITY.class,
                 parentColumns = "uid",
-                childColumns = "uid",
+                childColumns = "id",
                 onDelete = ForeignKey.CASCADE
         ),
-        indices = {@Index(value = "uid")}
+        indices = {@Index(value = "id")}
 )
 public class WalkingRecord {
     @PrimaryKey(autoGenerate = true)
+    public int No;
     public int id;
-    public int uid;
     public String datetime;
 
     @ColumnInfo(name = "Walking")

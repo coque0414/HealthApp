@@ -9,6 +9,6 @@ public interface WalkingRecordDao {
     @Insert
     void insertWalkingRecord(WalkingRecord walkingRecord);
 
-    @Query("SELECT * FROM Walking_Record WHERE uid = :uid AND datetime = :date")
-    WalkingRecord getWalkingRecordByDate(int uid, String date);
+    @Query("SELECT * FROM Walking_Record WHERE id = :id AND datetime = :date")
+    WalkingRecord getWalkingRecordByDate(int id, String date);
 }
