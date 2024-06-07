@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity2">
+
+    <TableRow
+        android:id="@+id/tableRow17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="209dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:text="두번째 페이지 이동성공"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="140dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="12dp"
+            android:text="다음페이지" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/plus" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/empty" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/empty" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/empty" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableRow18">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableRow19">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/empty" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/empty" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/empty" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/empty" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableRow20">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:text="test"
+            android:textAlignment="center" />
+    </TableRow>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
