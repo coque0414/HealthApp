@@ -2,9 +2,61 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity3">
+
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nickname님, 환영합니다."
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_water"/>
+
+    <Button
+        android:id="@+id/button_water"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="물마시기"
+        app:layout_constraintTop_toBottomOf="@id/welcome_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/button_steps"
+        app:layout_constraintBottom_toTopOf="@id/button_graph"/>
+
+    <Button
+        android:id="@+id/button_steps"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="걸음 수"
+        app:layout_constraintTop_toBottomOf="@id/welcome_text"
+        app:layout_constraintLeft_toRightOf="@id/button_water"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_graph"/>
+
+    <Button
+        android:id="@+id/button_graph"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="그래프"
+        app:layout_constraintTop_toBottomOf="@id/button_water"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_store"/>
+
+    <Button
+        android:id="@+id/button_store"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="상점"
+        app:layout_constraintTop_toBottomOf="@id/button_graph"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
