@@ -9,6 +9,9 @@ import android.content.Context;
 public abstract class USER_DB extends RoomDatabase {
     public abstract USER_DAO userDao();
     public abstract WalkingRecordDao walkingRecordDao();
+    public abstract WaterRecordDao waterRecordDao();
+    public abstract RewardDao rewardDao();
+    public abstract PurchasedItemsDao purchasedItemsDao();
 
     private static volatile USER_DB INSTANCE;
 
