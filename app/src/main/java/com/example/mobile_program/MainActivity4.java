@@ -1,5 +1,8 @@
 package com.example.mobile_program;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,94 +12,123 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.room.Room;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity4 extends AppCompatActivity implements SensorEventListener {
+
+    private TextView stepCount, treasureCounterTextView;
+    private ImageView imageView;
+    private Button increaseStepsButton;
+    private Button resetButton;
+    private USER_DB db;
+    private ExecutorService executorService;
+    private int loggedInUserID; // 예시 사용자 ID (실제로는 로그인된 사용자 ID를 가져와야 함)
+    private String currentDate;
+
     private SensorManager sensorManager;
-    private Sensor accelerometerSensor;
-    private TextView stepCounterTextView;
-    private TextView treasureCounterTextView;
-    private int stepCount = 0;
-    private int treasureCount = 0;
-    private int dailyTreasureCount = 0; // 하루에 획득한 보물 상자 수
-    private long lastStepTime = 0;
-    private static final long TIME_THRESHOLD = 1000; // 시간 간격 임계값 (1초)
-    private static final int STEP_THRESHOLD = 100; // 걸음 수 임계값
-    private static final int MAX_TREASURE_COUNT = 10; // 최대 보물상자 수
-    private static final int MAX_DAILY_TREASURE_COUNT = 10; // 하루 최대 보물상자 수
-    private static final String PREFS_NAME = "MyPrefsFile";
-    private static final String STEP_COUNT_KEY = "stepCount";
+    private Sensor stepSensor;
+    private boolean isSensorPresent;
+    private int totalSteps = 0;
+    private int previousTotalSteps = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main4);
 
-        stepCounterTextView = findViewById(R.id.step_counter);
+        stepCount = findViewById(R.id.step_counter);
         treasureCounterTextView = findViewById(R.id.treasure_count);
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        lastStepTime = System.currentTimeMillis(); // 이전 걸음 감지 시간 초기화
+        imageView = findViewById(R.id.imageView);
+        increaseStepsButton = findViewById(R.id.increase_steps_button);
+        resetButton = findViewById(R.id.reset_button);
 
-        Button increaseStepsButton = findViewById(R.id.increase_steps_button);
+        db = Room.databaseBuilder(this, USER_DB.class, "USER_DB")
+                .fallbackToDestructiveMigration()
+                .build();
+        executorService = Executors.newSingleThreadExecutor();
+
+        SharedPreferences sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        loggedInUserID = sharedPref.getInt("logged_in_user_id", -1);
+
+        // 현재 날짜 가져오기
+        currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
+            stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            isSensorPresent = true;
+        } else {
+            isSensorPresent = false;
+            Toast.makeText(this, "만보기가 지원되지 않습니다.", Toast.LENGTH_SHORT).show();
+        }
+
+        if (loggedInUserID != -1) {
+            updateStepCount();
+            updateTreasureCount();
+
+            imageView.setOnClickListener(v -> useTreasureBox());
+            resetButton.setOnClickListener(v -> resetSteps());
+        } else {
+            Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+
+        // 실시간 걸음 수 업데이트
+        updateStepCount();
+
+        // 상자 갯수 업데이트
+        updateTreasureCount();
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useTreasureBox();
+            }
+        });
+
         increaseStepsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 increaseSteps(100);
             }
         });
-
-        Button resetButton = findViewById(R.id.reset_button);
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetCounts();
-            }
-        });
-
-        ImageView imageView = findViewById(R.id.imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                decreaseTreasureCount();
-            }
-        });
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (isSensorPresent) {
+            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI); // 센서 동작 딜레이 설정
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(this);
+        if (isSensorPresent) {
+            sensorManager.unregisterListener(this);
+        }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float[] values = event.values;
-        float x = values[0];
-        float y = values[1];
-        float z = values[2];
-        double magnitude = Math.sqrt(x * x + y * y + z * z);
-
-        long currentTime = System.currentTimeMillis();
-        long stepInterval = currentTime - lastStepTime;
-
-        // 걸음 감지
-        if (magnitude > 25 && stepInterval > TIME_THRESHOLD) {
-            stepCount++;
-            updateStepCount();
-            lastStepTime = currentTime; // 현재 걸음 감지 시간을 이전 걸음 감지 시간으로 업데이트
+        if (event.sensor == stepSensor) {
+            totalSteps = (int) event.values[0];
+            int currentSteps = totalSteps - previousTotalSteps;
+            if (currentSteps > 0) {
+                previousTotalSteps = totalSteps;
+                updateWalkingRecord(1); // 걸음 수가 증가할 때마다 1을 증가시킴
+            }
         }
     }
 
@@ -104,46 +136,101 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    private void increaseSteps(int steps) {
-        stepCount += steps;
-        updateStepCount();
-    }
-
-    private void decreaseTreasureCount() {
-        if (treasureCount > 0) {
-            treasureCount--;
-            treasureCounterTextView.setText(String.valueOf(treasureCount));
-        }
-    }
-
-    private void resetCounts() {
-        stepCount = 0;
-        treasureCount = 0;
-        dailyTreasureCount = 0;
-        stepCounterTextView.setText("걸음 수: " + stepCount);
-        treasureCounterTextView.setText(String.valueOf(treasureCount));
-    }
 
     private void updateStepCount() {
-        stepCounterTextView.setText("걸음 수: " + stepCount);
+        executorService.execute(() -> {
+            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            if (record != null) {
+                runOnUiThread(() -> stepCount.setText(String.valueOf(record.walking)));
+            }
+        });
+    }
 
-        // 보물상자 수 업데이트
-        int newTreasureCount = stepCount / STEP_THRESHOLD;
-        if (newTreasureCount > MAX_TREASURE_COUNT) {
-            newTreasureCount = MAX_TREASURE_COUNT;
+    private void updateTreasureCount() {
+        executorService.execute(() -> {
+            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            if (record != null) {
+                runOnUiThread(() -> treasureCounterTextView.setText(String.valueOf(record.boxCount)));
+            }
+        });
+    }
+
+    private void useTreasureBox() {
+        executorService.execute(() -> {
+            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            if (record != null && record.boxCount > 0) {
+                record.boxCount--;
+                db.walkingRecordDao().updateWalkingRecord(record.id, currentDate, record.walking, record.boxCount);
+
+                USER_ENTITY user = db.userDao().getUser(loggedInUserID);
+                user.point += 1;
+                db.userDao().updateUser(user);
+
+                runOnUiThread(() -> {
+                    treasureCounterTextView.setText(String.valueOf(record.boxCount));
+                    Toast.makeText(MainActivity4.this, "포인트가 추가되었습니다!", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                runOnUiThread(() -> Toast.makeText(MainActivity4.this, "소모할 상자가 없습니다", Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
+    private void updateWalkingRecord(int steps) {
+        final int userId = loggedInUserID;
+        final String date = currentDate;
+        executorService.execute(() -> {
+            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(userId, date);
+            if (record == null) {
+                record = new WalkingRecord();
+                record.id = userId;
+                record.datetime = date;
+                record.walking = steps;
+                db.walkingRecordDao().insertWalkingRecord(record);
+            } else {
+                record.addSteps(steps);
+                db.walkingRecordDao().updateWalkingRecord(record);
+            }
+
+            final WalkingRecord updatedRecord = record;
+            runOnUiThread(() -> {
+                stepCount.setText(String.valueOf(updatedRecord.walking));
+                treasureCounterTextView.setText(String.valueOf(updatedRecord.boxCount));
+            });
+        });
+    }
+
+    private void increaseSteps(int steps) {
+        executorService.execute(() -> {
+            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            if (record != null) {
+                record.addSteps(steps);
+                db.walkingRecordDao().updateWalkingRecord(record);
+
+                runOnUiThread(() -> {
+                    stepCount.setText(String.valueOf(record.walking));
+                    treasureCounterTextView.setText(String.valueOf(record.boxCount));
+                    Toast.makeText(MainActivity4.this, steps + " 걸음이 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
         }
-        if (newTreasureCount > dailyTreasureCount) {
-            int additionalTreasures = newTreasureCount - dailyTreasureCount;
-            if (dailyTreasureCount + additionalTreasures > MAX_DAILY_TREASURE_COUNT) {
-                additionalTreasures = MAX_DAILY_TREASURE_COUNT - dailyTreasureCount;
-            }
-            dailyTreasureCount += additionalTreasures;
-            treasureCount += additionalTreasures;
-            if (treasureCount > MAX_TREASURE_COUNT) {
-                treasureCount = MAX_TREASURE_COUNT;
-            }
-            treasureCounterTextView.setText(String.valueOf(treasureCount));
+        private void resetSteps() {
+            final int userId = loggedInUserID;
+            final String date = currentDate;
+            previousTotalSteps = totalSteps;
+            stepCount.setText("0");
+            executorService.execute(() -> {
+                WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(userId, date);
+                if (record != null) {
+                    record.walking = 0;
+                    db.walkingRecordDao().updateWalkingRecord(record);
+                    runOnUiThread(() -> {
+                        stepCount.setText("0");
+                        treasureCounterTextView.setText(String.valueOf(record.boxCount));
+                        Toast.makeText(MainActivity4.this, "걸음 수가 초기화되었습니다.", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
         }
     }
-}
-

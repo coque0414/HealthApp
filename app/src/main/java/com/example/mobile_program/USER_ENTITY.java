@@ -7,9 +7,7 @@ import androidx.room.ForeignKey;
 
 @Entity(tableName = "User")
 public class USER_ENTITY {
-    @PrimaryKey(autoGenerate = true)
-    public int uid;
-
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "ID")
     public String id;
 

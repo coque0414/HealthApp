@@ -1,6 +1,10 @@
 package com.example.mobile_program;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -10,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import java.util.concurrent.ExecutorService;
@@ -23,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public Button button_Login;
     public USER_DB db;
     private ExecutorService executorService;
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,15 @@ public class MainActivity extends AppCompatActivity {
                 .fallbackToDestructiveMigration()
                 .build();
         executorService = Executors.newSingleThreadExecutor();
+
+        // 권한 요청
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.BODY_SENSORS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACTIVITY_RECOGNITION,
+                    Manifest.permission.BODY_SENSORS
+            }, PERMISSION_REQUEST_CODE);
+        }
 
         button_register.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, MainActivity2.class);
@@ -74,9 +90,12 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(MainActivity.this, "아이디 또는 비밀번호가 잘못입력 되었다", Toast.LENGTH_SHORT).show());
                     return;
                 }
-
-                // 로그인 상태 저장 (필요한 경우)
-                // 예를 들어, SharedPreferences를 사용하여 로그인 상태를 저장할 수 있음
+                // 로그인 상태 저장 (SharedPreferences 사용)
+                USER_ENTITY user = db.userDao().getUserByID(id);
+                SharedPreferences sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("logged_in_user_id", user.id);
+                editor.apply();
 
                 runOnUiThread(() -> {
                     Toast.makeText(MainActivity.this, "로그인이 완료 되었습니다", Toast.LENGTH_SHORT).show();
