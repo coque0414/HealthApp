@@ -1,5 +1,6 @@
 package com.example.mobile_program;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
@@ -7,7 +8,8 @@ import androidx.room.ForeignKey;
 
 @Entity(tableName = "User")
 public class USER_ENTITY {
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "ID")
     public String id;
 

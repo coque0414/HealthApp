@@ -5,10 +5,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {USER_ENTITY.class, WalkingRecord.class}, version = 2)
+@Database(entities = {USER_ENTITY.class, HealthRecord.class}, version = 8)
 public abstract class USER_DB extends RoomDatabase {
     public abstract USER_DAO userDao();
-    public abstract WalkingRecordDao walkingRecordDao();
+    public abstract HealthRecordDao HealthRecordDao();
 
     private static volatile USER_DB INSTANCE;
 

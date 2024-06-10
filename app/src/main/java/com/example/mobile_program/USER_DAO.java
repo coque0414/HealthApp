@@ -10,7 +10,7 @@ public interface USER_DAO {
     void insertUser(USER_ENTITY PutInUser);
 
     @Query("SELECT * FROM User WHERE id = :id")
-    USER_ENTITY getUser(int id);
+    USER_ENTITY getUser(String id);
 
     // 중복되는 아이디 체크
     @Query("SELECT COUNT(*) FROM User WHERE id = :id")

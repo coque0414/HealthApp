@@ -1,7 +1,6 @@
 package com.example.mobile_program;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -31,7 +30,7 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
     private Button resetButton;
     private USER_DB db;
     private ExecutorService executorService;
-    private int loggedInUserID; // 예시 사용자 ID (실제로는 로그인된 사용자 ID를 가져와야 함)
+    private String loggedInUserID; // 예시 사용자 ID (실제로는 로그인된 사용자 ID를 가져와야 함)
     private String currentDate;
 
     private SensorManager sensorManager;
@@ -57,7 +56,7 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
         executorService = Executors.newSingleThreadExecutor();
 
         SharedPreferences sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        loggedInUserID = sharedPref.getInt("logged_in_user_id", -1);
+        loggedInUserID = sharedPref.getString("logged_in_user_id", null);
 
         // 현재 날짜 가져오기
         currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -71,7 +70,7 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
             Toast.makeText(this, "만보기가 지원되지 않습니다.", Toast.LENGTH_SHORT).show();
         }
 
-        if (loggedInUserID != -1) {
+        if (loggedInUserID != null) {
             updateStepCount();
             updateTreasureCount();
 
@@ -103,6 +102,7 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
             }
         });
     }
+
 
     @Override
     protected void onResume() {
@@ -138,8 +138,10 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
 
 
     private void updateStepCount() {
+        final String userId = loggedInUserID;
+        final String date = currentDate;
         executorService.execute(() -> {
-            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, currentDate);
             if (record != null) {
                 runOnUiThread(() -> stepCount.setText(String.valueOf(record.walking)));
             }
@@ -147,8 +149,10 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
     }
 
     private void updateTreasureCount() {
+        final String userId = loggedInUserID;
+        final String date = currentDate;
         executorService.execute(() -> {
-            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, currentDate);
             if (record != null) {
                 runOnUiThread(() -> treasureCounterTextView.setText(String.valueOf(record.boxCount)));
             }
@@ -156,13 +160,15 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
     }
 
     private void useTreasureBox() {
+        final String userId = loggedInUserID;
+        final String date = currentDate;
         executorService.execute(() -> {
-            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, currentDate);
             if (record != null && record.boxCount > 0) {
                 record.boxCount--;
-                db.walkingRecordDao().updateWalkingRecord(record.id, currentDate, record.walking, record.boxCount);
+                db.HealthRecordDao().updateHealthRecord(userId, currentDate, record.walking, record.boxCount);
 
-                USER_ENTITY user = db.userDao().getUser(loggedInUserID);
+                USER_ENTITY user = db.userDao().getUser(userId);
                 user.point += 1;
                 db.userDao().updateUser(user);
 
@@ -177,22 +183,20 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
     }
 
     private void updateWalkingRecord(int steps) {
-        final int userId = loggedInUserID;
+        final String userId = loggedInUserID;
         final String date = currentDate;
         executorService.execute(() -> {
-            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(userId, date);
+            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, date);
             if (record == null) {
-                record = new WalkingRecord();
-                record.id = userId;
-                record.datetime = date;
-                record.walking = steps;
-                db.walkingRecordDao().insertWalkingRecord(record);
+                // 사용자 ID와 날짜로 새로운 레코드를 생성
+                record = new HealthRecord(userId, date, steps, 0, 0);
+                db.HealthRecordDao().insertWalkingRecord(record);
             } else {
                 record.addSteps(steps);
-                db.walkingRecordDao().updateWalkingRecord(record);
+                db.HealthRecordDao().updateHealthRecord(record);
             }
 
-            final WalkingRecord updatedRecord = record;
+            final HealthRecord updatedRecord = record;
             runOnUiThread(() -> {
                 stepCount.setText(String.valueOf(updatedRecord.walking));
                 treasureCounterTextView.setText(String.valueOf(updatedRecord.boxCount));
@@ -201,11 +205,13 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
     }
 
     private void increaseSteps(int steps) {
+        final String userId = loggedInUserID;
+        final String date = currentDate;
         executorService.execute(() -> {
-            WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(loggedInUserID, currentDate);
+            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, currentDate);
             if (record != null) {
                 record.addSteps(steps);
-                db.walkingRecordDao().updateWalkingRecord(record);
+                db.HealthRecordDao().updateHealthRecord(record);
 
                 runOnUiThread(() -> {
                     stepCount.setText(String.valueOf(record.walking));
@@ -216,15 +222,15 @@ public class MainActivity4 extends AppCompatActivity implements SensorEventListe
         });
         }
         private void resetSteps() {
-            final int userId = loggedInUserID;
+            final String userId = loggedInUserID;
             final String date = currentDate;
             previousTotalSteps = totalSteps;
             stepCount.setText("0");
             executorService.execute(() -> {
-                WalkingRecord record = db.walkingRecordDao().getWalkingRecordByDate(userId, date);
+                HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, date);
                 if (record != null) {
                     record.walking = 0;
-                    db.walkingRecordDao().updateWalkingRecord(record);
+                    db.HealthRecordDao().updateHealthRecord(record);
                     runOnUiThread(() -> {
                         stepCount.setText("0");
                         treasureCounterTextView.setText(String.valueOf(record.boxCount));

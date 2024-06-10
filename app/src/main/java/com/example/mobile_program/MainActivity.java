@@ -18,6 +18,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,6 +61,16 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.BODY_SENSORS
             }, PERMISSION_REQUEST_CODE);
         }
+//        // 자동 로그인 처리
+//        SharedPreferences sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+//        String loggedInUserId = sharedPref.getString("logged_in_user_id", null);
+//        if (loggedInUserId != null) {
+//            // 로그인 상태라면 MainActivity3으로 이동
+//            Intent intent = new Intent(this, MainActivity3.class);
+//            startActivity(intent);
+//            finish();
+//            return;
+//        }
 
         button_register.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, MainActivity2.class);
@@ -96,6 +109,18 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("logged_in_user_id", user.id);
                 editor.apply();
+
+                // 오늘 날짜를 포맷팅
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                String today = dateFormat.format(new Date());
+
+                // HealthRecord가 이미 있는지 확인
+                HealthRecord existingRecord = db.HealthRecordDao().getHealthRecordByDate(user.id, today);
+                if (existingRecord == null) {
+                    // HealthRecord 생성 및 삽입
+                    HealthRecord record = new HealthRecord(user.id, today, 0, 0, 0);
+                    db.HealthRecordDao().insertHealthRecord(record);
+                }
 
                 runOnUiThread(() -> {
                     Toast.makeText(MainActivity.this, "로그인이 완료 되었습니다", Toast.LENGTH_SHORT).show();
