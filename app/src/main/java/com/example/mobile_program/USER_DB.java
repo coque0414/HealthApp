@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {USER_ENTITY.class, HealthRecord.class}, version = 8)
+@Database(entities = {USER_ENTITY.class, HealthRecord.class}, version = 9)
 public abstract class USER_DB extends RoomDatabase {
     public abstract USER_DAO userDao();
     public abstract HealthRecordDao HealthRecordDao();

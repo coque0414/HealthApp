@@ -5,13 +5,14 @@ public class Movie {
     private String genre;
     private String releaseYear;
     private int imageResourceId;
+    private String points;
 
     public Movie(String title, String rating, String genre, String releaseYear, int imageResourceId) {
         this.title = title;
         this.rating = rating;
         this.genre = genre;
         this.releaseYear = releaseYear;
-        this.imageResourceId = imageResourceId;
+//        this.imageResourceId = imageResourceId;
     }
 
     public String getTitle() {
@@ -32,6 +33,10 @@ public class Movie {
 
     public int getImageResourceId() {
         return imageResourceId;
+    }
+
+    public String getPoints() {
+        return points;
     }
 }
 
