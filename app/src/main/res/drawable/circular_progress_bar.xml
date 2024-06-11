@@ -11,7 +11,7 @@
             android:angle="0"
             android:endColor="@color/color_primary"
             android:centerColor="@color/colorAccent"
-            android:startColor="@color/colorPrimaryDark"
+            android:startColor="#78FF00"
             android:type="sweep"
             android:useLevel="false"/>
     </shape>
