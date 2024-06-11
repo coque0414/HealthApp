@@ -46,7 +46,7 @@ public class WaterFragment extends Fragment {
             final int index = i;
             imageViews[i].setOnClickListener(v -> handleCupClick(index));
         }
-        imageViews[0].setImageResource(R.drawable.beforeplus);
+        imageViews[0].setImageResource(R.drawable.plus);
 
         db = Room.databaseBuilder(requireContext(), USER_DB.class, "USER_DB")
                 .fallbackToDestructiveMigration()
@@ -73,7 +73,7 @@ public class WaterFragment extends Fragment {
             if (record != null) {
                 getActivity().runOnUiThread(() -> {
                     for (int i = 0; i < record.waterCount; i++) {
-                        imageViews[i].setImageResource(R.drawable.beforefull);
+                        imageViews[i].setImageResource(R.drawable.full);
                         clicked[i] = true;
                     }
                 });
@@ -87,7 +87,7 @@ public class WaterFragment extends Fragment {
     private void handleCupClick(int index) {
         if (!clicked[index] && index == currentCupIndex) {
             clicked[index] = true;
-            imageViews[index].setImageResource(R.drawable.beforefull);
+            imageViews[index].setImageResource(R.drawable.full);
 
             if (currentCupIndex < 7) {
                 Toast.makeText(requireContext(), "잘하셨습니다!", Toast.LENGTH_SHORT).show();
@@ -98,7 +98,7 @@ public class WaterFragment extends Fragment {
             updateHealthRecord(currentCupIndex + 1);
             currentCupIndex++;
             if (currentCupIndex < 8) {
-                imageViews[currentCupIndex].setImageResource(R.drawable.beforeplus);
+                imageViews[currentCupIndex].setImageResource(R.drawable.plus);
             }
         }
     }

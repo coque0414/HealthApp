@@ -10,36 +10,12 @@
     android:padding="16dp">
 
     <!-- 상단 바 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-        <!-- 이전 -->
-        <!-- 앱 명칭 -->
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/bl"
-            android:gravity="center"
-            android:text="물마시기"
-            android:textColor="@android:color/white"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText,SpUsage" />
-        <!-- 다음 -->
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:background="@android:color/white" />
 
 
     <!-- 아바타 -->
+
+    <!-- Title -->
+
     <ImageView
         android:id="@+id/circularImageView"
         android:layout_width="150dp"
@@ -52,7 +28,6 @@
         android:src="@drawable/cl"
         tools:ignore="ContentDescription" />
 
-    <!-- Title -->
     <TextView
         android:id="@+id/text_message"
         android:layout_width="wrap_content"
