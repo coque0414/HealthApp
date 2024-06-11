@@ -74,7 +74,7 @@ public class StepsFragment extends Fragment implements SensorEventListener {
             isSensorPresent = true;
         } else {
             isSensorPresent = false;
-            Toast.makeText(requireContext(), "만보기가 지원되지 않습니다.", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(), "만보기가 지원되지 않습니다.", Toast.LENGTH_SHORT).show();
         }
 
         if (loggedInUserID != null) {

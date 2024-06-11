@@ -31,6 +31,7 @@ public class WaterFragment extends Fragment {
     private USER_DB db;
     private ExecutorService executorService;
     private String loggedInUserId;
+    private TextView textCupsNumber;
 
     @Nullable
     @Override
@@ -63,7 +64,23 @@ public class WaterFragment extends Fragment {
             requireActivity().finish();
         }
 
+        textCupsNumber = view.findViewById(R.id.text_cups_number);  // TextView 초기화
+
+        updateCupsNumber();
+        initializeCups();
+
         return view;
+    }
+    // DB에서 waterCount를 가져와 TextView를 업데이트하는 함수
+    private void updateCupsNumber() {
+        executorService.execute(() -> {
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(loggedInUserId, currentDate);
+            if (record != null) {
+                int waterCount = record.waterCount;
+                requireActivity().runOnUiThread(() -> textCupsNumber.setText(String.valueOf(waterCount)));
+            }
+        });
     }
 
     private void loadHealthRecord() {
@@ -85,12 +102,12 @@ public class WaterFragment extends Fragment {
     }
 
     private void handleCupClick(int index) {
-        if (!clicked[index] && index == currentCupIndex) {
+        if (index == currentCupIndex && imageViews[index].getDrawable().getConstantState().equals(getResources().getDrawable(R.drawable.plus).getConstantState())) {
             clicked[index] = true;
             imageViews[index].setImageResource(R.drawable.full);
 
             if (currentCupIndex < 7) {
-                Toast.makeText(requireContext(), "잘하셨습니다!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "잘하고 있어요!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "오늘 하루 수고하셨습니다.", Toast.LENGTH_LONG).show();
             }
@@ -99,8 +116,47 @@ public class WaterFragment extends Fragment {
             currentCupIndex++;
             if (currentCupIndex < 8) {
                 imageViews[currentCupIndex].setImageResource(R.drawable.plus);
+
+//        if (!clicked[index] && index == currentCupIndex) {
+//            clicked[index] = true;
+//            imageViews[index].setImageResource(R.drawable.full);
+//
+//            if (currentCupIndex < 7) {
+//                Toast.makeText(requireContext(), "잘하셨습니다!", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(requireContext(), "오늘 하루 수고하셨습니다.", Toast.LENGTH_LONG).show();
+//            }
+//
+//            updateHealthRecord(currentCupIndex + 1);
+//            currentCupIndex++;
+//            if (currentCupIndex < 8) {
+//                imageViews[currentCupIndex].setImageResource(R.drawable.plus);
             }
         }
+    }
+    // DB에서 waterCount를 가져와 초기 컵 상태를 설정하는 함수
+    private void initializeCups() {
+        executorService.execute(() -> {
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(loggedInUserId, currentDate);
+            if (record != null) {
+                int waterCount = record.waterCount;
+                requireActivity().runOnUiThread(() -> {
+                    textCupsNumber.setText(String.valueOf(waterCount));
+                    for (int i = 0; i < 8; i++) {
+                        if (i < waterCount) {
+                            imageViews[i].setImageResource(R.drawable.full);
+                            clicked[i] = true;
+                        } else if (i == waterCount) {
+                            imageViews[i].setImageResource(R.drawable.plus);
+                            currentCupIndex = i;
+                        } else {
+                            imageViews[i].setImageResource(R.drawable.empty);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void updateHealthRecord(int newWaterCount) {
@@ -115,9 +171,25 @@ public class WaterFragment extends Fragment {
                 user.point += (newWaterCount == 8) ? 5 : 1;
                 db.userDao().updateUser(user);
 
-                getActivity().runOnUiThread(() -> {
-                    String message = (newWaterCount == 8) ? "수고하셨습니다" : "잘하고있어요!";
+                requireActivity().runOnUiThread(() -> {
+                    String message = (newWaterCount == 8) ? "오늘 하루 수고하셨습니다." : "잘하고 있어요!";
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                    textCupsNumber.setText(String.valueOf(newWaterCount));  // TextView 업데이트
+
+//        final String userId = loggedInUserId;
+//        executorService.execute(() -> {
+//            HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, getCurrentDate());
+//            if (record != null) {
+//                record.waterCount = newWaterCount;
+//                db.HealthRecordDao().updateHealthRecord(record);
+//
+//                USER_ENTITY user = db.userDao().getUserByID(userId);
+//                user.point += (newWaterCount == 8) ? 5 : 1;
+//                db.userDao().updateUser(user);
+//
+//                getActivity().runOnUiThread(() -> {
+//                    String message = (newWaterCount == 8) ? "수고하셨습니다" : "잘하고있어요!";
+//                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
                 });
             }
         });
