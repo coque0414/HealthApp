@@ -115,56 +115,5 @@
         android:textStyle="normal"
         tools:ignore="HardcodedText,SpUsage" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardBackgroundColor="@color/white"
-        android:layout_marginTop="60dp"
-        >
-
-        <View
-            android:layout_width="160dp"
-            android:layout_height="1dp"
-            android:layout_gravity="left"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="51dp"
-            android:background="#909090"
-            tools:ignore="RtlHardcoded" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="-85dp"
-            android:text="OR"
-            android:textStyle="normal"
-            tools:ignore="HardcodedText" />
-        <View
-            android:layout_width="160dp"
-            android:layout_height="1dp"
-            android:layout_gravity="right"
-            android:layout_marginEnd="30dp"
-            android:layout_marginTop="51dp"
-            android:background="#909090"
-            tools:ignore="RtlHardcoded" />
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="left"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="80dp"
-            app:srcCompat="@drawable/google"
-            tools:ignore="ContentDescription,RtlHardcoded" />
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="right"
-            android:layout_marginEnd="130dp"
-            android:layout_marginTop="80dp"
-            app:srcCompat="@drawable/facebook"
-            tools:ignore="ContentDescription,RtlHardcoded" />
-    </androidx.cardview.widget.CardView>
-
 </LinearLayout>
     <!-- 로그인 버튼 & 밑에 구글, 페이스북 -->
