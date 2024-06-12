@@ -23,11 +23,22 @@
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:background="@drawable/circle_background"
-
         android:backgroundTint="@color/white"
         android:src="@drawable/cl"
         tools:ignore="ContentDescription" />
 
+    <TextView
+        android:id="@+id/point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="안녕하세요"
+        android:layout_marginRight="50dp"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/text_message"
         android:layout_width="wrap_content"
