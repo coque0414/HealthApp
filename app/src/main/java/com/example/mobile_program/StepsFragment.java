@@ -74,7 +74,7 @@ public class StepsFragment extends Fragment implements SensorEventListener {
             isSensorPresent = true;
         } else {
             isSensorPresent = false;
-//            Toast.makeText(requireContext(), "만보기가 지원되지 않습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "만보기가 지원되지 않습니다.", Toast.LENGTH_SHORT).show();
         }
 
         if (loggedInUserID != null) {
@@ -110,15 +110,16 @@ public class StepsFragment extends Fragment implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor == stepSensor) {
-            totalSteps = (int) event.values[0];
-            int currentSteps = totalSteps - previousTotalSteps;
+        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            int steps = (int) event.values[0];
+            int currentSteps = steps - previousTotalSteps;
             if (currentSteps > 0) {
-                previousTotalSteps = totalSteps;
-                updateWalkingRecord(1);
+                previousTotalSteps = steps;
+                updateWalkingRecord(currentSteps);
             }
         }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
