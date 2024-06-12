@@ -56,6 +56,8 @@ public class StepsFragment extends Fragment implements SensorEventListener {
         resetButton = view.findViewById(R.id.reset_button);
         recordProgressBar = view.findViewById(R.id.record_progress_bar);
 
+
+
         recordProgressBar.setMax(MAX_STEPS); // Circular ProgressBar의 최대값 설정
 
         db = Room.databaseBuilder(requireContext(), USER_DB.class, "USER_DB")
@@ -115,7 +117,7 @@ public class StepsFragment extends Fragment implements SensorEventListener {
             int currentSteps = steps - previousTotalSteps;
             if (currentSteps > 0) {
                 previousTotalSteps = steps;
-                updateWalkingRecord(currentSteps);
+                updateWalkingRecord(1);
             }
         }
     }
@@ -153,6 +155,7 @@ public class StepsFragment extends Fragment implements SensorEventListener {
     private void useTreasureBox() {
         final String userId = loggedInUserID;
         final String date = currentDate;
+        final TextView pointTextView = getView().findViewById(R.id.point); // pointTextView를 final로 선언하고 찾습니다.
         executorService.execute(() -> {
             HealthRecord record = db.HealthRecordDao().getHealthRecordByDate(userId, currentDate);
             if (record != null && record.boxCount > 0) {
@@ -160,11 +163,15 @@ public class StepsFragment extends Fragment implements SensorEventListener {
                 db.HealthRecordDao().updateHealthRecord(userId, currentDate, record.walking, record.boxCount);
 
                 USER_ENTITY user = db.userDao().getUser(userId);
-                user.point += 1;
+                user.point += 1; // 포인트 증가
                 db.userDao().updateUser(user);
 
                 getActivity().runOnUiThread(() -> {
                     treasureCounterTextView.setText(String.valueOf(record.boxCount));
+
+                    // 포인트 텍스트뷰에 포인트 값을 설정
+                    pointTextView.setText("포인트: " + user.point);
+
                     Toast.makeText(requireContext(), "포인트가 추가되었습니다!", Toast.LENGTH_SHORT).show();
                 });
             } else {
@@ -172,6 +179,8 @@ public class StepsFragment extends Fragment implements SensorEventListener {
             }
         });
     }
+
+
 
     private void updateWalkingRecord(int steps) {
         final String userId = loggedInUserID;

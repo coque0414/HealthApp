@@ -171,6 +171,7 @@ public class WaterFragment extends Fragment {
                 user.point += (newWaterCount == 8) ? 5 : 1;
                 db.userDao().updateUser(user);
 
+
                 requireActivity().runOnUiThread(() -> {
                     String message = (newWaterCount == 8) ? "오늘 하루 수고하셨습니다." : "잘하고 있어요!";
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
